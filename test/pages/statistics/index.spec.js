@@ -8,10 +8,27 @@ const stubs = {
     'b-modal': genericStub,
 }
 
+const data = function () {
+    return {
+        id: 1,
+    }
+}
+
+const mocks = {
+    $nuxt: {
+        context: {
+            params: {
+                id: 'qwerty'
+            }
+        }
+    }
+}
+
 describe('pages/statistics/index', () => {
     test('Should render HTML', () => {
         const wrapper = mount(Statistics, {
-            stubs
+            stubs,
+            data
         });
 
         expect(wrapper.vm).toBeTruthy();
@@ -46,7 +63,8 @@ describe('pages/statistics/index', () => {
                     }
                 }
             },
-            stubs
+            stubs,
+            data
         });
 
         expect(wrapper.vm).toBeTruthy();
@@ -54,21 +72,74 @@ describe('pages/statistics/index', () => {
     });
 
     test('Should get computed property', () => {
-        const idMock = 'qwerty';
         const wrapper = shallowMount(Statistics, {
-            mocks: {
-                $nuxt: {
-                    context: {
-                        params: {
-                            id: idMock
-                        }
-                    }
-                }
-            },
-            stubs
+            mocks,
+            stubs,
+            data
+        });
+    });
+
+    test('Should correctly handle unexistened link', async () => {
+        const wrapper = shallowMount(Statistics, {
+            mocks,
+            stubs,
+            data
         });
 
-        expect(wrapper.vm).toBeTruthy();
-        expect(wrapper.vm.pageId).toEqual(idMock);
+        const error = jest.fn();
+        await wrapper.vm.$options.asyncData({
+            params: { id: 404 },
+            $axios: {
+                get: jest.fn(async () => {
+                    return { status: 404 }
+                }),
+            },
+            error,
+        });
+
+        expect(error).toBeCalledTimes(1);
+        expect(error).toBeCalledWith({
+            statusCode: 404,
+            message: 'Statistics ID 404 does not exists'
+
+        });
+    });
+
+    test('Should correctly handle existing link', async () => {
+        const shortLink = 'qwerty';
+        const statisticsLink = 'sqwerty';
+        const originalLink = 'https://example.com';
+        const id = 123;
+
+        const wrapper = shallowMount(Statistics, {
+            mocks,
+            stubs,
+            data
+        });
+
+        const error = jest.fn();
+        const asyncData = await wrapper.vm.$options.asyncData({
+            params: { id: 1 },
+            $axios: {
+                get: jest.fn(async () => {
+                    return {
+                        status: 200,
+                        data: {
+                            short_link: shortLink,
+                            original_link: originalLink,
+                            id: id,
+                        }
+                    }
+                }),
+            },
+            error,
+        });
+
+        expect(error).toBeCalledTimes(0);
+        expect(asyncData).toEqual({
+            shortLink: `http://localhost/${shortLink}`,
+            originalLink,
+            id: id
+        })
     });
 });
