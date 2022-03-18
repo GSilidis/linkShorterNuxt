@@ -5,7 +5,7 @@
             <b-input-group prepend="Short link:">
                 <b-form-input
                     readonly
-                    :value="shortLink"
+                    :value="shortURL"
                     @click.prevent="onInputClick"
                 />
             </b-input-group>
@@ -15,7 +15,7 @@
             >
                 <b-form-input
                     readonly
-                    :value="statisticsLink"
+                    :value="statisticsURL"
                     @click.prevent="onInputClick"
                 />
             </b-input-group>
@@ -41,7 +41,14 @@ export default {
             required: true,
         },
     },
-
+    computed: {
+        shortURL () {
+            return `${window.location.protocol}//${window.location.host}/${this.shortLink}`;
+        },
+        statisticsURL () {
+            return `${window.location.protocol}//${window.location.host}/statistics/${this.statisticsLink}`;
+        },
+    },
     methods: {
         onInputClick (event) {
             event.target.setSelectionRange(0, event.target.value.length);
