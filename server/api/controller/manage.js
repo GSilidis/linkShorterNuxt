@@ -81,10 +81,6 @@ module.exports.route = function (db) {
     });
 
     Manage.delete('/:id', async (req, res, next) => {
-        if (!req.params.id) {
-            return next(new BadRequestError('Missing required param ID'));
-        }
-
         if (isNaN(req.params.id)) {
             return next(new BadRequestError('ID should be integer'));
         }
