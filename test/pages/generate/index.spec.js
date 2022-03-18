@@ -1,7 +1,7 @@
 import Generate from '@/pages/generate/index';
 import { shallowMount } from '@vue/test-utils';
 
-describe('pages/index', () => {
+describe('pages/generate', () => {
     test('Should render HTML', () => {
         const wrapper = shallowMount(Generate);
 
