@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  db:
+    image: mariadb:10.7.3
+    hostname: mariadb1
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
+      - MARIADB_DATABASE=links
+      - MARIADB_USER=$MARIADB_USER
+      - MARIADB_PASSWORD=$MARIADB_PASSWORD
+    volumes:
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      #- db-data:/var/lib/mysql - Uncomment for persistent storage
+    networks:
+      - app-network
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nodejs
+    depends_on:
+      - db
+    container_name: link_shorter_app
+    restart: unless-stopped
+    env_file: .env
+    working_dir: /link_shorter
+    environment:
+      - MARIADB_USER=$MARIADB_USER
+      - MARIADB_PASSWORD=$MARIADB_PASSWORD
+      - MARIADB_HOST=mariadb1:3306
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    command:
+      yarn prod
+
+networks:
+  app-network:
+    driver: bridge
+#volumes: - Uncomment for persistent storage
+  #db-data:

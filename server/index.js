@@ -10,6 +10,8 @@ const app = express();
 const config = require('../nuxt.config.js');
 config.dev = process.env.NODE_ENV !== 'production';
 
+process.send = process.send || function () {};
+
 function initSequelize () {
     const Sequelize = require('sequelize');
     const sequelize_defaults = {
@@ -20,12 +22,24 @@ function initSequelize () {
         logging: false,
     };
 
-    const db = new Sequelize('mariadb://localhost:3306/links?user=node&password=password', sequelize_defaults);
+    const host = process.env.MARIADB_HOST || 'localhost:3306';
+    const user = process.env.MARIADB_USER;
+    const password = process.env.MARIADB_PASSWORD;
+
+    const db = new Sequelize(`mariadb://${host}/links?user=${user}&password=${password}`, sequelize_defaults);
 
     require('./api/model/links')(db, Sequelize.DataTypes);
     require('./api/model/stats')(db, Sequelize.DataTypes);
 
     return db;
+}
+
+function initRoutes (db) {
+    app.use(bodyParser.json());
+
+    app.use('/', Redirect.route(db));
+    app.use('/api/link', Manage.route(db));
+    app.use('/api/stats', Statistics.route(db));
 }
 
 async function start () {
@@ -40,11 +54,7 @@ async function start () {
 
     const db = initSequelize();
 
-    app.use(bodyParser.json());
-
-    app.use('/', Redirect.route(db));
-    app.use('/api/link', Manage.route(db));
-    app.use('/api/stats', Statistics.route(db));
+    initRoutes(db);
 
     app.use(nuxt.render);
     app.listen({ port, host }, function () {
