@@ -7,19 +7,19 @@ const SHORT_URL_PREF = 'h';
 const STAT_URL_SALT = 'stats';
 const STAT_URL_PREF = 't';
 
-async function createURL (db, original_url, Links) {
+async function createURL (db, original_url, model) {
     try {
         const shortUrl = SHORT_URL_PREF + hash(original_url + new Date().toUTCString() + SHORT_URL_SALT);
         const statisticsUrl = STAT_URL_PREF + hash(original_url + new Date().toUTCString() + STAT_URL_SALT);
 
-        return await Links.create({
+        return await model.create({
             short_link: shortUrl,
             original_link: original_url,
             statistics_link: statisticsUrl,
         });
     } catch (error) {
         if (error instanceof UniqueConstraintError) {
-            return await createURL(db, original_url, Links); // If we got hash collision - try again
+            return await createURL(db, original_url, model); // If we got hash collision - try again
         } else {
             throw error;
         }
@@ -27,7 +27,7 @@ async function createURL (db, original_url, Links) {
 }
 
 /**
- * Creates route for managing URLs (CRD operations)
+ * Creates routes for managing URLs (CRD operations)
  * @param {Sequelize} db
  * @returns {express.Router} Express route
  */
