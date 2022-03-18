@@ -28,5 +28,8 @@ export default {
     components: {
         BIconLink45deg,
     },
+    head: {
+        title: 'Link shorter',
+    },
 };
 </script>

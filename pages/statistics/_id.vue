@@ -67,6 +67,9 @@ export default {
             };
         }
     },
+    head: {
+        title: 'Link statistics',
+    },
     computed: {
         pageId () {
             return this.$nuxt.context.params.id;

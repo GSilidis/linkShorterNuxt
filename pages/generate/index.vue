@@ -46,6 +46,9 @@ export default {
             },
         };
     },
+    head: {
+        title: 'Link generation',
+    },
     methods: {
         onGenerationFormSubmit (payload) {
             this.linkData.shortLink = payload.shortLink;
