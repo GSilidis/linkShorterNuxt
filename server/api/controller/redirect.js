@@ -22,7 +22,7 @@ module.exports.route = function (db) {
         } catch (error) {
             console.error(error);
 
-            return next(InternalServerError);
+            return next(new InternalServerError());
         }
 
         if (link) {
