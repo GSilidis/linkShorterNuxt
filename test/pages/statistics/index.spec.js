@@ -107,7 +107,6 @@ describe('pages/statistics/index', () => {
 
     test('Should correctly handle existing link', async () => {
         const shortLink = 'qwerty';
-        const statisticsLink = 'sqwerty';
         const originalLink = 'https://example.com';
         const id = 123;
 
