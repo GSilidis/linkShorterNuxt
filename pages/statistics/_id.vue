@@ -1,8 +1,10 @@
 <template>
     <div class="manage-container py-3 px-1 text-center">
         <h1 class="font-weight-bold">Manage</h1>
-        <h2> Short link: <span class="underlined">{{ shortLink }}</span> </h2>
-        <h3> Original link: <span class="underlined">{{ originalLink }}</span> </h3>
+        <h2> Short link: </h2>
+        <p>{{ shortLink }}</p>
+        <h3> Original link: </h3>
+        <p>{{ originalLink }}</p>
         <delete-link-button :link-id="id" />
         <div class="d-flex justify-content-center">
             <div class="statistics-holder mt-4 mx-2 py-1 col-xl-11 border rounded shadow-sm">
