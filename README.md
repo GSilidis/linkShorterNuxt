@@ -1,6 +1,45 @@
 # link_shorter
 
+Simple link shortener service (similar to bit.ly). App written using Nuxt.js framework (Vue.js)
+
+**Front page**
+
+
+**Form for submitting a link**
+* After submitting a link, the user receives a shortened link
+* Additionally the user receives a link to the statistics page for the shortened link
+* Clicking a shortened link redirects the user directly to the original link
+
+**Statistics page**
+* Chart or table with link clicks per day
+* Button for deleting the link
+
+## Launch
+
+Make sure that docker and docker-composed installed and configured (tested with `Docker version 20.10.13, build a224086` 
+and `docker-compose version 1.27.4, build 40524192`)
+
+Then, setup .env file with DB credentials, that will be used by MariaDB and App containers
+```
+# Example
+
+MARIADB_ROOT_PASSWORD=example
+MARIADB_DATABASE=links
+MARIADB_USER=node
+MARIADB_PASSWORD=password
+```
+
+After setting .env file you can launch app  
+
+```shell
+$ docker-compose up app
+```
+
+This will launch and setup two containers: one containing MariaDB for data storage and link_shorter_app with app itself.
+
 ## Build Setup
+
+For local development use (make sure that latest Node.js LTS and Yarn are installed):
 
 ```bash
 # install dependencies
@@ -8,13 +47,6 @@ $ yarn install
 
 # serve with hot reload at localhost:3000
 $ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
 ```
 
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
@@ -67,3 +99,14 @@ More information about the usage of this directory in [the documentation](https:
 This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
 
 More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+
+
+## Unit testing
+
+For unit testing use: 
+
+```shell
+$ yarn test
+```
+
+This will run both front-end and back-end unit tests
